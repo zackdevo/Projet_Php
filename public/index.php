@@ -1,3 +1,65 @@
+<?php
+require("../vendor/autoload.php");
+
+use Entity\Users;
+use Entity\Posts;
+
+// 1er USER ET POST
+$userDarkioz = new Users;
+$userDarkioz->id = 1;
+$userDarkioz->nickname = "darkioz";
+$userDarkioz->password = "darkioz";
+
+$reviewDarkioz = new Posts;
+$reviewDarkioz->id = 1;
+$reviewDarkioz->title = "The Last Of Us 2";
+$reviewDarkioz->subtitle = "Le pire jeu de l'histoire";
+$reviewDarkioz->content = "Bonjour à tous, voici ma review du jeu The Last Of Us 2 ...";
+$reviewDarkioz->user = $userDarkioz;
+
+// 2nd USER ET POST
+
+$userRobertDu13 = new Users;
+$userRobertDu13->id = 2;
+$userRobertDu13->nickname = "robertdu13";
+$userRobertDu13->password = "robertdu13";
+
+$reviewRobertDu13 = new Posts;
+$reviewRobertDu13->id = 2;
+$reviewRobertDu13->title = "Halo 5";
+$reviewRobertDu13->subtitle = "La fin d'une saga culte ? ";
+$reviewRobertDu13->content = "Salut tous le monde, aujourd'hui je parle d'une saga culte ...";
+$reviewRobertDu13->user = $userRobertDu13;
+
+// 3rd USER ET POST
+$userJujuDevil = new Users;
+$userJujuDevil->id = 3;
+$userJujuDevil->nickname = "jujudevil";
+$userJujuDevil->password = "jujudevil";
+
+$reviewJujuDevil = new Posts;
+$reviewJujuDevil->id = 3;
+$reviewJujuDevil->title = "Death Stranding";
+$reviewJujuDevil->subtitle = "Le délire Kojima de trop";
+$reviewJujuDevil->content = "Kojima, le génie connut pour la saga Metal Gear Solid ...";
+$reviewJujuDevil->user = $userJujuDevil;
+
+// 4th USER ET POST
+
+$userKilobi = new Users;
+$userKilobi->id = 4;
+$userKilobi->nickname = "kilobi";
+$userKilobi->password = "kilobi";
+
+$reviewKilobi = new Posts;
+$reviewKilobi->id = 4;
+$reviewKilobi->title = "Dark Souls 3";
+$reviewKilobi->subtitle = "ce jeu n'es pas fun";
+$reviewKilobi->content = "Le jeu est tro dur je compren pas pk les gens aime";
+$reviewKilobi->user = $userKilobi;
+
+$items = [$reviewDarkioz, $reviewRobertDu13, $reviewJujuDevil, $reviewKilobi];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +75,7 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <!-- CSS PERSO -->
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="./css/style.css">
 
 </head>
 
@@ -78,59 +140,29 @@
                     <h2 class="h2 display-4 text-light text-center mb-3">Dernières reviews</h2>
                 </div>
             </div>
-            <div class="row px-3 mb-4">
-                <div class="card col-5 ">
-                    <div class="card-body">
-                        <h5 class="card-title">The Last Of Us 2</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Le pire jeu de l'histoire</h6>
-                        <p class="card-text">Bonjour à tous, voici ma review du jeu The Last Of Us 2 ...</p>
-                        <p class="user_name card-text">@darkioz</p>
-                        <a href="#" class="card-link">Voir la review complète</a> <br>
-                        <a href="#" class="card-link">Voir toutes les reviews de cet utilistateur</a>
+            <div class="row px-3 mb-4 justify-content-center">
+                <?php
+                foreach ($items as $oneItem) {
+                ?>
+                    <div class="card col-5 mb-3 mr-3">
+                        <div class="card-body">
+                            <h5 class="card-title"> <?= $oneItem->title ?> </h5>
+                            <h6 class="card-subtitle mb-2 text-muted"> <?= $oneItem->subtitle ?> </h6>
+                            <p class="card-text"> <?= $oneItem->content ?> </p>
+                            <p class="user_name card-text">@<?= $oneItem->user->nickname ?></p>
+                            <a href="#" class="card-link">Voir la review complète</a> <br>
+                            <a href="#" class="card-link">Voir toutes les reviews de cet utilistateur</a>
+                        </div>
                     </div>
-                </div>
-                <div class="card col-5 offset-2">
-                    <div class="card-body">
-                        <h5 class="card-title">Halo 5</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">La fin d'une saga culte ?</h6>
-                        <p class="card-text">Salut tous le monde, aujourd'hui je parle d'une saga culte ...</p>
-
-                        <p class="user_name card-text">@robertodu13</p>
-                        <a href="#" class="card-link">Voir la review complète</a> <br>
-                        <a href="#" class="card-link">Voir toutes les reviews de cet utilistateur</a>
-                    </div>
-                </div>
-            </div>
-            <div class="row px-3 mb-4">
-                <div class="card col-5">
-                    <div class="card-body">
-                        <h5 class="card-title">Death Stranding</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Le délire Kojima de trop</h6>
-                        <p class="card-text">Kojima, le génie connut pour la saga Metal Gear Solid ...</p>
-                        <p class="user_name card-text">@jujudevil</p>
-                        <a href="#" class="card-link">Voir la review complète</a> <br>
-                        <a href="#" class="card-link">Voir toutes les reviews de cet utilistateur</a>
-                    </div>
-                </div>
-                <div class="card col-5 offset-2">
-                    <div class="card-body">
-                        <h5 class="card-title">Dark Souls 3</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">ce jeu n'es pas fun</h6>
-                        <p class="card-text">Le jeu est tro dur je compren pas pk les gens aime</p>
-                        <p class="user_name card-text">@kilobi</p>
-                        <a href="#" class="card-link">Voir la review complète</a> <br>
-                        <a href="#" class="card-link">Voir toutes les reviews de cet utilistateur</a>
-                    </div>
-                </div>
+                <?php
+                }
+                ?>
             </div>
 
         </section>
         <section class="container my-5">
             <div class="row ">
-                <!-- CONTENU DEPUIS LA BASE DE DONNES -->
-                <?php
-                include_once('../models/PostManager.php');
-                ?>
+
             </div>
         </section>
     </main>

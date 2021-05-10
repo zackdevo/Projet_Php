@@ -5,5 +5,7 @@ namespace Entity;
 class Users
 {
     public $id;
-    public $
+    public $created_at;
+    public $nickname;
+    public $password;
 }

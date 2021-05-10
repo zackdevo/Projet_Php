@@ -7,14 +7,14 @@
     padding: 222px 0;
 }
 .first-car {
-    background-image: url(img/1st_gaming.jpg);
+    background-image: url(../img/1st_gaming.jpg);
 }
 
 .second-car {
-    background-image: url(img/2nd_gaming.jpg);
+    background-image: url(../img/2nd_gaming.jpg);
 }
 .third-car {
-    background-image: url(img/3rd_gaming.jpg);
+    background-image: url(../img/3rd_gaming.jpg);
 }
 
 body {
