@@ -1,64 +1,17 @@
 <?php
 require("../vendor/autoload.php");
 
-use Entity\Users;
 use Entity\Posts;
+use ludk\Persistence\ORM;
 
-// 1er USER ET POST
-$userDarkioz = new Users;
-$userDarkioz->id = 1;
-$userDarkioz->nickname = "darkioz";
-$userDarkioz->password = "darkioz";
-
-$reviewDarkioz = new Posts;
-$reviewDarkioz->id = 1;
-$reviewDarkioz->title = "The Last Of Us 2";
-$reviewDarkioz->subtitle = "Le pire jeu de l'histoire";
-$reviewDarkioz->content = "Bonjour à tous, voici ma review du jeu The Last Of Us 2 ...";
-$reviewDarkioz->user = $userDarkioz;
-
-// 2nd USER ET POST
-
-$userRobertDu13 = new Users;
-$userRobertDu13->id = 2;
-$userRobertDu13->nickname = "robertdu13";
-$userRobertDu13->password = "robertdu13";
-
-$reviewRobertDu13 = new Posts;
-$reviewRobertDu13->id = 2;
-$reviewRobertDu13->title = "Halo 5";
-$reviewRobertDu13->subtitle = "La fin d'une saga culte ? ";
-$reviewRobertDu13->content = "Salut tous le monde, aujourd'hui je parle d'une saga culte ...";
-$reviewRobertDu13->user = $userRobertDu13;
-
-// 3rd USER ET POST
-$userJujuDevil = new Users;
-$userJujuDevil->id = 3;
-$userJujuDevil->nickname = "jujudevil";
-$userJujuDevil->password = "jujudevil";
-
-$reviewJujuDevil = new Posts;
-$reviewJujuDevil->id = 3;
-$reviewJujuDevil->title = "Death Stranding";
-$reviewJujuDevil->subtitle = "Le délire Kojima de trop";
-$reviewJujuDevil->content = "Kojima, le génie connut pour la saga Metal Gear Solid ...";
-$reviewJujuDevil->user = $userJujuDevil;
-
-// 4th USER ET POST
-
-$userKilobi = new Users;
-$userKilobi->id = 4;
-$userKilobi->nickname = "kilobi";
-$userKilobi->password = "kilobi";
-
-$reviewKilobi = new Posts;
-$reviewKilobi->id = 4;
-$reviewKilobi->title = "Dark Souls 3";
-$reviewKilobi->subtitle = "ce jeu n'es pas fun";
-$reviewKilobi->content = "Le jeu est tro dur je compren pas pk les gens aime";
-$reviewKilobi->user = $userKilobi;
-
-$items = [$reviewDarkioz, $reviewRobertDu13, $reviewJujuDevil, $reviewKilobi];
+require __DIR__ . '/../vendor/autoload.php';
+$orm = new ORM(__DIR__ . '/../Resources');
+$postsRepo = $orm->getRepository(Posts::class);
+if (isset($_GET['search'])) {
+    $items = $postsRepo->findBy(array("content" => '%' . $_GET['search'] . '%'));
+} else {
+    $items = $postsRepo->findAll();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -70,6 +23,7 @@ $items = [$reviewDarkioz, $reviewRobertDu13, $reviewJujuDevil, $reviewKilobi];
     <title>Project PHP</title>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="js/script.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
     <!-- Bootstrap -->
@@ -97,8 +51,8 @@ $items = [$reviewDarkioz, $reviewRobertDu13, $reviewJujuDevil, $reviewKilobi];
                         <a class="nav-link text-light" href="#">Toutes les reviews</a>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0 mr-auto">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher">
+                <form method="get" class="form-inline my-2 my-lg-0 mr-auto">
+                    <input name="search" class="form-control mr-sm-2" id="search" type="search" placeholder="Rechercher" aria-label="Rechercher">
                     <button id="search-btn" class="btn btn-outline-success my-2 my-sm-0 text-light" type="submit">Rechercher</button>
                 </form>
                 <ul class="navbar-nav">

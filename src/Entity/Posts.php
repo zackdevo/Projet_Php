@@ -2,6 +2,8 @@
 
 namespace Entity;
 
+use ludk\Utils\Serializer;
+
 class Posts
 {
     public $id;
@@ -11,4 +13,5 @@ class Posts
     public $subtitle;
     public $content;
     public Users $user;
+    use Serializer;
 }

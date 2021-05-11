@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "created_at": "21/09/2021",
+        "title": "The Last Of Us 2",
+        "subtitle": "Le pire jeu de l'histoire",
+        "content": "Bonjour à tous, voici ma review du jeu The Last Of Us 2 ...",
+        "user": 1
+    },
+    {
+        "id": 2,
+        "created_at": "15/12/2021",
+        "title": "Halo 5",
+        "subtitle": "La fin d'une saga culte ? ",
+        "content": "Salut tous le monde, aujourd'hui je parle d'une saga culte ...",
+        "user": 2
+    },
+    {
+        "id": 3,
+        "created_at": "09/11/2021",
+        "title": "Death Stranding",
+        "subtitle": "Le délire Kojima de trop",
+        "content": "Kojima, le génie connut pour la saga Metal Gear Solid ...",
+        "user": 3
+    },
+    {
+        "id": 4,
+        "created_at": "03/05/2021",
+        "title": "Dark Souls 3",
+        "subtitle": "ce jeu n'es pas fun",
+        "content": "Le jeu est tro dur je compren pas pk les gens aime",
+        "user": 4
+    }
+]
