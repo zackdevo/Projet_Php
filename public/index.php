@@ -2,124 +2,96 @@
 require("../vendor/autoload.php");
 
 use Entity\Posts;
+use Entity\Users;
 use ludk\Persistence\ORM;
 
 require __DIR__ . '/../vendor/autoload.php';
+session_start();
 $orm = new ORM(__DIR__ . '/../Resources');
+$usersRepo = $orm->getRepository(Users::class);
 $postsRepo = $orm->getRepository(Posts::class);
-if (isset($_GET['search'])) {
-    $items = $postsRepo->findBy(array("content" => '%' . $_GET['search'] . '%'));
-} else {
-    $items = $postsRepo->findAll();
+$manager = $orm->getManager();
+
+$action = $_GET["action"] ?? "display";
+switch ($action) {
+    case 'register':
+        if (isset($_POST['pseudo']) && isset($_POST['password']) && isset($_POST['password2'])) {
+            $response = $usersRepo->findBy(["nickname" => $_POST["pseudo"]]);
+            if (count($response) > 0) {
+                $errorMsg = "Pseudo déjà pris bg unlucky";
+            }
+            if ($_POST['password'] != $_POST['password2']) {
+                $errorMsg = "Le second mot de passe doit être le même que le premier";
+            }
+            if ($errorMsg) {
+                include('../templates/register.php');
+            } else {
+                $newUser = new Users;
+                $newUser->created_at = date("Y-m-d H:i:s");
+                $newUser->nickname = $_POST['pseudo'];
+                $newUser->password = $_POST['password'];
+                $manager->persist($newUser);
+                $manager->flush();
+                $_SESSION["user"] = $newUser;
+                header('Location: ?action=display');
+            }
+        }
+        include('../templates/register.php');
+
+        break;
+    case 'logout':
+        session_destroy();
+        header('Location: ?/action=display');
+        break;
+    case 'login':
+        if (isset($_POST["pseudo"])  && isset($_POST["password"])) {
+            $criteriaWithloginAndPawword = [
+                "nickname" => $_POST['pseudo'],
+                "password" => $_POST['password']
+            ];
+            $usersWithThisNicknameAndPassword = $usersRepo->findBy($criteriaWithloginAndPawword);
+            if (count($usersWithThisNicknameAndPassword) == 1) {
+                $_SESSION['user'] = $usersWithThisNicknameAndPassword[0];
+                header('Location: ?action=display');
+            } else {
+                $errorMsgLog = "Mauvais mot de passe ou pseudo";
+            }
+        }
+        include('../templates/login.php');
+        break;
+    case 'new':
+        $errorMsgReview = NULL;
+        if (isset($_POST['title']) && isset($_POST['subtitle']) && isset($_POST['content']) && isset($_SESSION["user"])) {
+            if (strlen(trim($_POST['title'])) < 2) {
+                $errorMsgReview = "Le titre du jeu doit au moins faire deux caractères mec";
+            } elseif (strlen(trim($_POST['subtitle'])) < 2) {
+                $errorMsgReview = "Le titre de la review doit au moins faire deux caractères mec";
+            } elseif (strlen(trim($_POST['content'])) <= 0) {
+                $errorMsgReview = "La review est vide mec come on";
+            }
+            if ($errorMsgReview) {
+                include('../templates/createReview.php');
+            } else {
+                $newReview = new Posts;
+                $newReview->created_at = date("Y-m-d H:i:s");
+                $newReview->title = $_POST['title'];
+                $newReview->subtitle = $_POST['subtitle'];
+                $newReview->content = $_POST['content'];
+                $newReview->user = $_SESSION['user'];
+                $manager->persist($newReview);
+                $manager->flush();
+                header('Location: ?action=display');
+            }
+        }
+        include('../templates/createReview.php');
+        break;
+    case 'display':
+        if (isset($_GET['search'])) {
+            $items = $postsRepo->findBy(array("content" => '%' . $_GET['search'] . '%'));
+        } else {
+            $items = $postsRepo->findAll();
+        }
+        include('../templates/display.php');
+    default:
+        break;
 }
-?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project PHP</title>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script src="js/script.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <!-- CSS PERSO -->
-    <link rel="stylesheet" href="./css/style.css">
-
-</head>
-
-<body>
-    <main>
-
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand text-light" href="#">Gaming Shareview</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link text-light" href="mainPage.php">Accueil <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="#">Toutes les reviews</a>
-                    </li>
-                </ul>
-                <form method="get" class="form-inline my-2 my-lg-0 mr-auto">
-                    <input name="search" class="form-control mr-sm-2" id="search" type="search" placeholder="Rechercher" aria-label="Rechercher">
-                    <button id="search-btn" class="btn btn-outline-success my-2 my-sm-0 text-light" type="submit">Rechercher</button>
-                </form>
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="login.php">Se connecter</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="register.php">S'inscrire</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        <div id="carouselExampleControls" class="carousel slide mb-3 d-flex align-items-center" data-ride="carousel">
-            <div class="carousel-inner ">
-                <div class="carousel-item active first-car">
-                    <h1 class="text-center text-light">Partagez vos reviews sur tous les jeux vidéos !</h1>
-                </div>
-                <div class="carousel-item second-car">
-                    <h2 class="h1 text-center text-light">Echangez avec la communauté sous vos postes !</h2>
-                </div>
-                <div class="carousel-item third-car">
-                    <h2 class="h1 text-center text-light">Notez la qualité de la review !</h2>
-                </div>
-            </div>
-            <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Précédent</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Suivant</span>
-            </a>
-        </div>
-
-        <section class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h2 class="h2 display-4 text-light text-center mb-3">Dernières reviews</h2>
-                </div>
-            </div>
-            <div class="row px-3 mb-4 justify-content-center">
-                <?php
-                foreach ($items as $oneItem) {
-                ?>
-                    <div class="card col-5 mb-3 mr-3">
-                        <div class="card-body">
-                            <h5 class="card-title"> <?= $oneItem->title ?> </h5>
-                            <h6 class="card-subtitle mb-2 text-muted"> <?= $oneItem->subtitle ?> </h6>
-                            <p class="card-text"> <?= $oneItem->content ?> </p>
-                            <p class="user_name card-text">@<?= $oneItem->user->nickname ?></p>
-                            <a href="#" class="card-link">Voir la review complète</a> <br>
-                            <a href="#" class="card-link">Voir toutes les reviews de cet utilistateur</a>
-                        </div>
-                    </div>
-                <?php
-                }
-                ?>
-            </div>
-
-        </section>
-        <section class="container my-5">
-            <div class="row ">
-
-            </div>
-        </section>
-    </main>
-</body>
-
-</html>
