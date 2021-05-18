@@ -33,12 +33,11 @@ include("../templates/header.php");
         foreach ($items as $oneItem) {
         ?>
             <div class="card col-5 mb-3 mr-3">
-                <div class="card-body">
+                <div id='get-content' class="card-body">
                     <h5 class="card-title"> <?= $oneItem->title ?> </h5>
                     <h6 class="card-subtitle mb-2 text-muted"> <?= $oneItem->subtitle ?> </h6>
-                    <p class="card-text"> <?= $oneItem->content ?> </p>
+                    <p class="card-text content"> <?= $oneItem->content ?> </p>
                     <p class="user_name card-text">@<?= $oneItem->user->nickname ?></p>
-                    <a href="#" class="card-link">Voir la review complète</a> <br>
                     <a href="#" class="card-link">Voir toutes les reviews de cet utilistateur</a>
                 </div>
             </div>
