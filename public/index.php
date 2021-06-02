@@ -15,7 +15,7 @@ $usersRepo = $orm->getRepository(Users::class);
 $postsRepo = $orm->getRepository(Posts::class);
 $manager = $orm->getManager();
 
-$action = $_GET["action"] ?? "display";
+$action = substr(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), 1);
 switch ($action) {
     case 'register':
         $controller = new AuthController;
@@ -37,5 +37,7 @@ switch ($action) {
         $controller = new HomeController;
         $controller->display();
     default:
+        $controller = new HomeController;
+        $controller->display();
         break;
 }

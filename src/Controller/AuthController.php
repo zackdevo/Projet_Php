@@ -18,7 +18,7 @@ class AuthController
             $usersWithThisNicknameAndPassword = $usersRepo->findBy($criteriaWithloginAndPawword);
             if (count($usersWithThisNicknameAndPassword) == 1) {
                 $_SESSION['user'] = $usersWithThisNicknameAndPassword[0];
-                header('Location: ?action=display');
+                header('Location: /display');
             } else {
                 $errorMsgLog = "Mauvais mot de passe ou pseudo";
             }
@@ -29,7 +29,7 @@ class AuthController
     function logout()
     {
         session_destroy();
-        header('Location:?action=display');
+        header('Location:/display');
     }
 
     function register()
@@ -54,7 +54,7 @@ class AuthController
                 $manager->persist($newUser);
                 $manager->flush();
                 $_SESSION["user"] = $newUser;
-                header('Location:?action=display');
+                header('Location:/display');
             }
         }
         include('../templates/register.php');

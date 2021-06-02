@@ -30,7 +30,7 @@ class ContentController
                 $newReview->user = $_SESSION['user'];
                 $manager->persist($newReview);
                 $manager->flush();
-                header('Location:?action=display');
+                header('Location: /display');
             }
         }
         include('../templates/createReview.php');

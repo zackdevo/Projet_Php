@@ -22,7 +22,7 @@
     <main>
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand text-light" href="?action=display">Gaming Shareview</a>
+            <a class="navbar-brand text-light" href="/display">Gaming Shareview</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -30,7 +30,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item active">
-                        <a class="nav-link text-light" href="?action=display">Accueil <span class="sr-only">(current)</span></a>
+                        <a class="nav-link text-light" href="/display">Accueil <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-light" href="#">Toutes les reviews</a>
@@ -44,7 +44,7 @@
                     <?php
                     if (!isset($_SESSION['user'])) { ?>
                         <li class="nav-item">
-                            <a class="nav-link text-light" href="?action=login">Se connecter</a>
+                            <a class="nav-link text-light" href="/login">Se connecter</a>
                         </li>
                     <?php
                     } else { ?>
@@ -52,17 +52,17 @@
                             <p style="margin: 0;" class=" nav-link text-light">Eh salut <?= $_SESSION['user']->nickname ?> ça va ou quoi ? </p>
                         </li>
                         <li class="nav-item">
-                            <a href="?action=new"> <button id="create-btn" class="btn btn-outline-success my-2 my-sm-0 text-light"> Rédiger une review !</button></a>
+                            <a href="/new"> <button id="create-btn" class="btn btn-outline-success my-2 my-sm-0 text-light"> Rédiger une review !</button></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" href="?action=logout">Se déconnecter</a>
+                            <a class="nav-link text-light" action="/logout" href="/logout">Se déconnecter</a>
                         </li>
 
                     <?php
                     }
                     if (!isset($_SESSION['user'])) { ?>
                         <li class="nav-item">
-                            <a class="nav-link text-light" href="?action=register">S'inscrire</a>
+                            <a class="nav-link text-light" action="/register" href="/register">S'inscrire</a>
                         </li>
                     <?php
                     } ?>
