@@ -37,7 +37,5 @@ switch ($action) {
         $controller = new HomeController;
         $controller->display();
     default:
-        $controller = new HomeController;
-        $controller->display();
         break;
 }

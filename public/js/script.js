@@ -14,9 +14,5 @@ jQuery(document).ready(function () {
     jQuery(".read-more").click(function () {
         jQuery(this).css("display", "none");
         jQuery(this).siblings('.more-text').contents().unwrap();
-        // Ajouter un bouton See Less
-        // if (jQuery(this).length) {
-
-        // }
     });
 });
