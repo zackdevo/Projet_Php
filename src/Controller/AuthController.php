@@ -3,60 +3,75 @@
 namespace Controller;
 
 use Entity\Users;
+use ludk\Controller\AbstractController;
+use ludk\Http\Response;
+use ludk\Http\Request;
 
-class AuthController
+class AuthController extends AbstractController
 {
 
-    function login()
+    // LOGIN
+    public function login(Request $request): Response
     {
-        global $usersRepo;
-        if (isset($_POST["pseudo"])  && isset($_POST["password"])) {
+        $usersRepo = $this->getOrm()->getRepository(Users::class);
+        $data = [];
+        if ($request->request->has("pseudo") && $request->request->has("password")) {
             $criteriaWithloginAndPawword = [
-                "nickname" => $_POST['pseudo'],
-                "password" => $_POST['password']
+                "nickname" => $request->request->get("pseudo"),
+                "password" => $request->request->get("password"),
             ];
             $usersWithThisNicknameAndPassword = $usersRepo->findBy($criteriaWithloginAndPawword);
             if (count($usersWithThisNicknameAndPassword) == 1) {
-                $_SESSION['user'] = $usersWithThisNicknameAndPassword[0];
-                header('Location: /display');
+                $request->getSession()->set('user', $usersWithThisNicknameAndPassword[0]);
+                return $this->redirectToRoute('display');
             } else {
-                $errorMsgLog = "Mauvais mot de passe ou pseudo";
+                $data = array(
+                    "errorMsg" => "Mauvais mot de passe ou pseudo !"
+                );
             }
         }
-        include('../templates/login.php');
+        return $this->render('login.php', $data);
     }
 
-    function logout()
+
+    // LOGOUT 
+    public function logout(Request $request): Response
     {
-        session_destroy();
-        header('Location:/display');
+        $request->getSession()->remove('user');
+        return $this->redirectToRoute('display');
     }
 
-    function register()
+
+    // REGISTER
+    public function register(Request $request): Response
     {
-        global $usersRepo;
-        global $manager;
-        if (isset($_POST['pseudo']) && isset($_POST['password']) && isset($_POST['password2'])) {
-            $response = $usersRepo->findBy(["nickname" => $_POST["pseudo"]]);
+        $usersRepo = $this->getOrm()->getRepository(Users::class);
+        $manager = $this->getOrm()->getManager();
+        if ($request->request->has("pseudo") && $request->request->has("password") && $request->request->has("password2")) {
+            $response = $usersRepo->findBy(["nickname" => $request->request->get("pseudo")]);
             if (count($response) > 0) {
-                $errorMsg = "Pseudo déjà pris bg unlucky";
+                $data = array(
+                    "errorMsg" => "Ce pseudo est déjà pris !"
+                );
             }
-            if ($_POST['password'] != $_POST['password2']) {
-                $errorMsg = "Le second mot de passe doit être le même que le premier";
+            if ($request->request->get("password") != $request->request->get("password2")) {
+                $data = array(
+                    "errorMsg" => "Le second mot de passe doit être le même que le premier !"
+                );
             }
-            if ($errorMsg) {
-                include('../templates/register.php');
+            if ($data) {
+                return $this->render('register.php', $data);
             } else {
                 $newUser = new Users;
                 $newUser->created_at = date("Y-m-d H:i:s");
-                $newUser->nickname = $_POST['pseudo'];
-                $newUser->password = $_POST['password'];
+                $newUser->nickname = $request->request->get("pseudo");
+                $newUser->password = $request->request->get("password");
                 $manager->persist($newUser);
                 $manager->flush();
-                $_SESSION["user"] = $newUser;
-                header('Location:/display');
+                $request->getSession()->set('user', $newUser);
+                return $this->redirectToRoute('display');
             }
         }
-        include('../templates/register.php');
+        return $this->render('register.php');
     }
 }

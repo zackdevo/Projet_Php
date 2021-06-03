@@ -1,4 +1,4 @@
-<?php include("header.php") ?>
+{% include 'header.php' %}
 <section class="container mt-5 st">
     <div class="row justify-content-center">
         <div class="col-6 border border-dark bg-form py-2 rounded">

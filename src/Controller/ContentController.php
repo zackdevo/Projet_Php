@@ -2,37 +2,45 @@
 
 namespace Controller;
 
-use Entity\Users;
 use Entity\Posts;
+use ludk\Controller\AbstractController;
+use ludk\Http\Response;
+use ludk\Http\Request;
 
-class ContentController
+class ContentController extends AbstractController
 {
-    function create()
+    public function create(Request $request): Response
     {
-        global $manager;
-        $errorMsgReview = NULL;
-        if (isset($_POST['title']) && isset($_POST['subtitle']) && isset($_POST['content']) && isset($_SESSION["user"])) {
-            if (strlen(trim($_POST['title'])) < 2) {
-                $errorMsgReview = "Le titre du jeu doit au moins faire deux caractères mec";
-            } elseif (strlen(trim($_POST['subtitle'])) < 2) {
-                $errorMsgReview = "Le titre de la review doit au moins faire deux caractères mec";
-            } elseif (strlen(trim($_POST['content'])) <= 0) {
-                $errorMsgReview = "La review est vide mec come on";
+        $manager = $this->getOrm()->getManager();
+        if ($request->request->has("title") && $request->request->has("subtitle") && $request->request->has("content") && $request->getSession()->has('user')) {
+            if (strlen(trim($request->request->get("title"))) < 2) {
+                $data = array(
+                    "errorMsg" => "Le titre du jeu doit au moins faire 2 caractères !"
+                );
+            } elseif (strlen(trim($request->request->get("subtitle"))) < 2) {
+                $data = array(
+                    "errorMsg" => "Le titre de la review doit au moins faire 2 caractères !"
+                );
+            } elseif (strlen(trim($request->request->get("content"))) <= 0) {
+                $data = array(
+                    "errorMsg" => "La review est vide man"
+                );
             }
-            if ($errorMsgReview) {
-                include('../templates/createReview.php');
+
+            if ($data) {
+                return $this->render('createReview.php', $data);
             } else {
                 $newReview = new Posts;
                 $newReview->created_at = date("Y-m-d H:i:s");
-                $newReview->title = $_POST['title'];
-                $newReview->subtitle = $_POST['subtitle'];
-                $newReview->content = $_POST['content'];
-                $newReview->user = $_SESSION['user'];
+                $newReview->title = $request->request->get("title");
+                $newReview->subtitle = $request->request->get("subtitle");
+                $newReview->content = $request->request->get("content");
+                $newReview->user = $request->getSession()->get('user');
                 $manager->persist($newReview);
                 $manager->flush();
-                header('Location: /display');
+                return $this->redirectToRoute('display');
             }
         }
-        include('../templates/createReview.php');
+        return $this->render('createReview.php');
     }
 }

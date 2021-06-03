@@ -37,7 +37,7 @@
                     </li>
                 </ul>
                 <form method="get" class="form-inline my-2 my-lg-0 mr-auto">
-                    <input name="search" class="form-control mr-sm-2" id="search" type="search" placeholder="Rechercher" aria-label="Rechercher">
+                    <input autocomplete="off" name="search" class="form-control mr-sm-2" id="search" type="search" placeholder="Rechercher" aria-label="Rechercher">
                     <button id="search-btn" class="btn btn-outline-success my-2 my-sm-0 text-light" type="submit">Rechercher</button>
                 </form>
                 <ul class="navbar-nav">
@@ -60,7 +60,7 @@
 
                     <?php
                     }
-                    if (!isset($_SESSION['user'])) { ?>
+                    if (!(isset($_SESSION['user']))) { ?>
                         <li class="nav-item">
                             <a class="nav-link text-light" action="/register" href="/register">S'inscrire</a>
                         </li>
