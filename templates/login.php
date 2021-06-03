@@ -16,8 +16,8 @@
             </form>
             <div class="row justify-content-center">
                 <?php
-                if (isset($errorMsgLog)) {
-                    echo "<p class='alert alert-warning'>$errorMsgLog</p>";
+                if (isset($errorMsg)) {
+                    echo "<p class='alert alert-warning'>$errorMsg</p>";
                 }
                 ?>
             </div>
